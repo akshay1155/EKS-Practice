@@ -1,16 +1,16 @@
 # Create Cluster
-eksctl create cluster --name=eksdemo1 --region=us-east-1 --zones=us-east-1a,us-east-1b --without-nodegroup 
-eksctl get cluster                  
+ - eksctl create cluster --name=eksdemo1 --region=us-east-1 --zones=us-east-1a,us-east-1b --without-nodegroup 
+ - eksctl get cluster                  
 
-eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster eksdemo1 --approve
+ - eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster eksdemo1 --approve
 
   
-eksctl create nodegroup --cluster=eksdemo1 --region=us-east-1 --name=eksdemo1-ng-public1 --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=4 --node-volume-size=20 --ssh-access --ssh-public-key=kube-demo --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access 
+ - eksctl create nodegroup --cluster=eksdemo1 --region=us-east-1 --name=eksdemo1-ng-public1 --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=4 --node-volume-size=20 --ssh-access --ssh-public-key=kube-demo --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access 
 
-eksctl get cluster
+ - eksctl get cluster
 
 
-eksctl delete cluster eksdemo1
+ - eksctl delete cluster eksdemo1
 
 
 - #https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html
@@ -21,7 +21,7 @@ eksctl delete cluster eksdemo1
 - aws eks create-addon --cluster-name eksdemo1 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::590183828947:role/AmazonEKS_EBS_CSI_DriverRole
 
 
-
-
 aws iam detach-role-policy --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --role-name AmazonEKS_EBS_CSI_DriverRole
 aws iam delete-role --role-name AmazonEKS_EBS_CSI_DriverRole
+
+
