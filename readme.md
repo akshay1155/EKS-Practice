@@ -4,9 +4,12 @@
 
  - eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster eksdemo1 --approve
 
-  
+# Create EKS Node Group in Public Subnets:
  - eksctl create nodegroup --cluster=eksdemo1 --region=us-east-1 --name=eksdemo1-ng-public1 --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=4 --node-volume-size=20 --ssh-access --ssh-public-key=kube-demo --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access 
 
+# Create EKS Node Group in Private Subnets:
+ - eksctl create nodegroup --cluster=eksdemo1 --region=us-east-1 --name=eksdemo1-ng-public1 --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=4 --node-volume-size=20 --ssh-access --ssh-public-key=kube-demo --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access --node-private-networking
+   
  - eksctl get cluster
 
 
@@ -25,3 +28,14 @@ aws iam detach-role-policy --policy-arn arn:aws:iam::aws:policy/service-role/Ama
 aws iam delete-role --role-name AmazonEKS_EBS_CSI_DriverRole
 
 
+# ALB Ingress:
+- eksctl get iamserviceaccount --cluster=eksdemo1
+- curl -o iam_policy_latest.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+- aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy_latest.json
+- Policy ARN: arn:aws:iam::590183828947:policy/AWSLoadBalancerControllerIAMPolicy
+- eksctl create iamserviceaccount --cluster=eksdemo1 --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::590183828947:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve
+- eksctl  get iamserviceaccount --cluster eksdemo1
+
+- winget install Helm.Helm
+
+- helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=eksdemo1 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-east-1 --set vpcId=vpc-01e9a699574a575b1 --set image.repository=602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller
