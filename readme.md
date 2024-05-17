@@ -38,6 +38,14 @@ aws iam delete-role --role-name AmazonEKS_EBS_CSI_DriverRole
 
 - winget install Helm.Helm
 
-- helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=eksdemo1 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-east-1 --set vpcId=vpc-0818aeb3d00306551 --set image.repository=602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller
+- helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=eksdemo1 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-east-1 --set vpcId=vpc-05b2eb8bbeeb098a1 --set image.repository=602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller
 
-- 
+- helm uninstall aws-load-balancer-controller -n kube-system
+
+
+# EKS-Workloads-on-Fargate
+- eksctl get fargateprofile --cluster eksdemo1
+
+- eksctl create fargateprofile --cluster eksdemo1 --name fp-demo --namespace fp-dev
+
+- eksctl delete fargateprofile --cluster eksdemo1 --name fp-demo --wait
